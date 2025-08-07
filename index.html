@@ -315,9 +315,15 @@
 
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 25px;
             margin-top: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .result-card {
@@ -327,7 +333,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #47b7c9;
             animation: cardPop 0.4s ease;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .result-card:hover {
@@ -368,42 +374,59 @@
         }
 
         .highlight-card {
-            background: linear-gradient(135deg, #47b7c9 0%, #3a9fb0 100%);
-            color: white;
-            border-left: none;
-            box-shadow: 0 6px 20px rgba(71, 183, 201, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbfc 100%);
+            border-left: 5px solid #ff7c33;
+            box-shadow: 0 4px 16px rgba(255, 124, 51, 0.15);
         }
 
-        .highlight-card .result-label,
-        .highlight-card .result-description {
-            color: rgba(255, 255, 255, 0.95);
+        .highlight-card:hover {
+            box-shadow: 0 6px 20px rgba(255, 124, 51, 0.2);
         }
 
         .highlight-card .result-value {
-            color: white;
+            color: #ff7c33;
         }
 
         .static-callout {
             background: linear-gradient(135deg, #fff4e6 0%, #fffbf5 100%);
             border-left: 5px solid #ff7c33;
-            padding: 20px 25px;
-            border-radius: 10px;
-            margin: 25px 0;
-            font-size: 15px;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
             color: #663c00;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        /* CTA Section */
-        .cta-section {
-            display: none;
+        .static-callout strong {
+            color: #ff7c33;
+        }
+
+        .download-text {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 124, 51, 0.2);
+            color: #085588;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .download-text:hover {
+            color: #47b7c9;
+        }
+
+        /* CTA Section - Integrated */
+        .cta-integrated {
             background: linear-gradient(135deg, #085588 0%, #064469 100%);
             color: white;
-            padding: 50px;
+            padding: 40px;
+            margin-top: 40px;
+            border-radius: 12px;
             text-align: center;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(8, 85, 136, 0.2);
-            max-width: 700px;
-            margin: 0 auto 40px;
         }
 
         .cta-title {
@@ -447,24 +470,12 @@
             text-decoration: underline;
         }
 
-        /* Download Button */
-        .download-btn {
-            background: white;
-            color: #085588;
-            padding: 12px 24px;
-            border: 2px solid #085588;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: all 0.3s ease;
+        /* Remove old standalone CTA section */
+        .cta-section {
+            display: none !important;
         }
 
-        .download-btn:hover {
-            background: #085588;
-            color: white;
-        }
+        /* Download Button - Removed */
 
         /* Full Disclaimer */
         .disclaimer {
@@ -627,29 +638,25 @@
         <div class="results-container" id="resultsSection">
             <h2 class="step-title">Your Capital Advantage with TuaCommercial</h2>
             
-            <div class="static-callout">
-                <strong>💡 Key Insight:</strong> Traditional funding delays and mismatched loans cost businesses time and money. TuaCommercial's fast, flexible financing solutions are designed to keep your business moving forward.
-            </div>
-
             <div class="results-grid" id="resultsGrid">
                 <!-- Results will be dynamically inserted here -->
             </div>
 
-            <button class="download-btn" onclick="window.print()">📥 Download Report</button>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="cta-section" id="ctaSection">
-            <h3 class="cta-title">Ready to Accelerate Your Business Growth?</h3>
-            <a href="https://go.tuafinancial.com/business-health-assessment" 
-               class="primary-cta" target="_blank">
-                Book Your Business Health Assessment
-            </a>
-            <div class="secondary-cta">
-                Prefer to talk to a lending expert?<br>
-                <a href="mailto:sales@tuafinancial.com">Contact our team →</a>
+            <!-- Integrated CTA Section -->
+            <div class="cta-integrated">
+                <h3 class="cta-title">Ready to Accelerate Your Business Growth?</h3>
+                <a href="https://go.tuafinancial.com/business-health-assessment" 
+                   class="primary-cta" target="_blank">
+                    Book Your Business Health Assessment
+                </a>
+                <div class="secondary-cta">
+                    Prefer to talk to a lending expert?<br>
+                    <a href="mailto:sales@tuafinancial.com">Contact our team →</a>
+                </div>
             </div>
         </div>
+
+        <!-- CTA Section (removed - now integrated above) -->
 
         <!-- Full Disclaimer -->
         <div class="disclaimer">
@@ -811,9 +818,22 @@
                 resultsGrid.appendChild(totalCard);
             }
 
-            // Show results and CTA sections
+            // Add Key Insight card as the last card in the grid
+            const insightCard = document.createElement('div');
+            insightCard.className = 'static-callout';
+            insightCard.innerHTML = `
+                <div>
+                    <strong>💡 Key Insight:</strong><br>
+                    Traditional funding delays and mismatched loans cost businesses time and money. TuaCommercial's fast, flexible financing solutions are designed to keep your business moving forward.
+                </div>
+                <div class="download-text" onclick="window.print()">
+                    📥 Download Report
+                </div>
+            `;
+            resultsGrid.appendChild(insightCard);
+
+            // Show results section (CTA is now integrated)
             document.getElementById('resultsSection').style.display = 'block';
-            document.getElementById('ctaSection').style.display = 'block';
 
             // Smooth scroll to results
             document.getElementById('resultsSection').scrollIntoView({ 
