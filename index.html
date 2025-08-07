@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuaCommercial ROI Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .main-heading {
+            color: #085588;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .intro-text {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            color: #085588;
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Form Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #085588;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .required {
+            color: #ff7c33;
+            margin-left: 3px;
+        }
+
+        .tooltip {
+            display: inline-block;
+            margin-left: 8px;
+            width: 20px;
+            height: 20px;
+            background: #ff7c33;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 13px;
+            cursor: help;
+            position: relative;
+            transition: all 0.2s ease;
+            font-weight: bold;
+        }
+
+        .tooltip:hover {
+            transform: scale(1.15);
+            background: #e66b2d;
+            box-shadow: 0 2px 8px rgba(255, 124, 51, 0.3);
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #47b7c9;
+            padding: 12px 16px;
+            border-radius: 10px;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            max-width: 300px;
+            white-space: normal;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 2px solid #47b7c9;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #47b7c9;
+            z-index: 1001;
+        }
+
+        .tooltip:hover::after,
+        .tooltip:hover::before {
+            animation: tooltipFadeIn 0.3s ease;
+        }
+
+        @keyframes tooltipFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e4e8;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #47b7c9;
+            box-shadow: 0 0 0 4px rgba(71, 183, 201, 0.15);
+            background: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background: linear-gradient(135deg, #f6f8fa 0%, #f0f9fb 100%);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-group:hover {
+            background: linear-gradient(135deg, #e8f4f7 0%, #e0f5f9 100%);
+            border-color: #47b7c9;
+        }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 14px;
+            cursor: pointer;
+            accent-color: #47b7c9;
+        }
+
+        /* Mini Insight */
+        .mini-insight {
+            background: linear-gradient(135deg, #fff4e6 0%, #fffbf5 100%);
+            border-left: 4px solid #ff7c33;
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-size: 15px;
+            color: #663c00;
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .mini-insight.show {
+            display: block;
+        }
+
+        .mini-insight strong {
+            color: #ff7c33;
+        }
+
+        /* CTA Button */
+        .calculate-btn {
+            background: #47b7c9;
+            color: white;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(71, 183, 201, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calculate-btn:hover {
+            background: #3a9fb0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(71, 183, 201, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Small Disclaimer */
+        .small-disclaimer {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbfc 100%);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #47b7c9;
+            animation: cardPop 0.4s ease;
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes cardPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            color: #085588;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .result-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, #47b7c9 0%, #3a9fb0 100%);
+            color: white;
+            border-left: none;
+            box-shadow: 0 6px 20px rgba(71, 183, 201, 0.3);
+        }
+
+        .highlight-card .result-label,
+        .highlight-card .result-description {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .highlight-card .result-value {
+            color: white;
+        }
+
+        .static-callout {
+            background: linear-gradient(135deg, #fff4e6 0%, #fffbf5 100%);
+            border-left: 5px solid #ff7c33;
+            padding: 20px 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-size: 15px;
+            color: #663c00;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            display: none;
+            background: linear-gradient(135deg, #085588 0%, #064469 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(8, 85, 136, 0.2);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .cta-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .primary-cta {
+            display: inline-block;
+            background: #ff7c33;
+            color: white;
+            padding: 18px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 17px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 124, 51, 0.3);
+        }
+
+        .primary-cta:hover {
+            background: #e66b2d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 124, 51, 0.4);
+        }
+
+        .secondary-cta {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+        }
+
+        .secondary-cta a {
+            color: #47b7c9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .secondary-cta a:hover {
+            text-decoration: underline;
+        }
+
+        /* Download Button */
+        .download-btn {
+            background: white;
+            color: #085588;
+            padding: 12px 24px;
+            border: 2px solid #085588;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #085588;
+            color: white;
+        }
+
+        /* Full Disclaimer */
+        .disclaimer {
+            background: #f6f8fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 40px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            border: 1px solid #e1e4e8;
+        }
+
+        .disclaimer strong {
+            color: #085588;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .main-heading {
+                font-size: 28px;
+            }
+
+            .intro-text {
+                font-size: 16px;
+            }
+
+            .form-container,
+            .results-container {
+                padding: 30px 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section {
+                padding: 35px 25px;
+            }
+
+            .primary-cta {
+                display: block;
+                width: 100%;
+            }
+        }
+
+        @media print {
+            .calculate-btn,
+            .download-btn,
+            .cta-section,
+            .small-disclaimer {
+                display: none !important;
+            }
+
+            .results-container {
+                display: block !important;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <img src="https://24395067.fs1.hubspotusercontent-na1.net/hubfs/24395067/TuaCommercial.png" 
+                 alt="TuaCommercial" class="logo">
+            <h1 class="main-heading">TuaCommercial ROI Calculator</h1>
+            <p class="intro-text">
+                Discover how smarter financing can improve your cash flow, reduce interest costs, and get capital in your hands faster. Answer a few quick questions to see your business advantage with TuaCommercial.
+            </p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <h2 class="step-title">Tell Us About Your Business</h2>
+            
+            <div class="form-grid">
+                <div class="form-group" id="revenueGroup" style="display: none;">
+                    <label for="monthlyRevenue">
+                        Monthly Revenue ($)
+                        <span class="tooltip" data-tooltip="Your average monthly business revenue. This helps calculate the opportunity cost of funding delays.">?</span>
+                    </label>
+                    <input type="number" id="monthlyRevenue" placeholder="e.g., 50000">
+                </div>
+
+                <div class="form-group">
+                    <label for="capitalAmount">
+                        Capital Needed ($)<span class="required">*</span>
+                        <span class="tooltip" data-tooltip="The total amount of funding your business needs right now for growth or operations.">?</span>
+                    </label>
+                    <input type="number" id="capitalAmount" placeholder="e.g., 100000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="fundingDelay">
+                        Typical Wait for Funds
+                        <span class="tooltip" data-tooltip="How long you typically wait for funding approval with traditional lenders.">?</span>
+                    </label>
+                    <select id="fundingDelay">
+                        <option value="3">3 days</option>
+                        <option value="7">7 days</option>
+                        <option value="14">14 days</option>
+                        <option value="30" selected>30 days</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="useCase">
+                        Use of Funds
+                        <span class="tooltip" data-tooltip="What you plan to use the funding for. This helps us calculate the most relevant savings.">?</span>
+                    </label>
+                    <select id="useCase">
+                        <option value="Equipment">Equipment Purchase</option>
+                        <option value="Working Capital">Working Capital</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="loanType">
+                        Current Financing Type
+                        <span class="tooltip" data-tooltip="Your current or preferred traditional financing method for comparison.">?</span>
+                    </label>
+                    <select id="loanType">
+                        <option value="Term Loan">Term Loan</option>
+                        <option value="Line of Credit">Line of Credit</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeCashFlow">
+                        <label for="includeCashFlow" style="margin-bottom: 0;">
+                            Include Cash Flow Impact Analysis
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mini-insight" id="miniInsight">
+                💡 With Tua, you could get funded <strong>27 days faster</strong> than with a traditional bank!
+            </div>
+
+            <button class="calculate-btn" onclick="calculateROI()">Show My Business Impact</button>
+            
+            <p class="small-disclaimer">
+                This tool provides illustrative estimates and does not represent a financing offer. Actual terms may vary.
+            </p>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container" id="resultsSection">
+            <h2 class="step-title">Your Capital Advantage with TuaCommercial</h2>
+            
+            <div class="static-callout">
+                <strong>💡 Key Insight:</strong> Traditional funding delays and mismatched loans cost businesses time and money. TuaCommercial's fast, flexible financing solutions are designed to keep your business moving forward.
+            </div>
+
+            <div class="results-grid" id="resultsGrid">
+                <!-- Results will be dynamically inserted here -->
+            </div>
+
+            <button class="download-btn" onclick="window.print()">📥 Download Report</button>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section" id="ctaSection">
+            <h3 class="cta-title">Ready to Accelerate Your Business Growth?</h3>
+            <a href="https://go.tuafinancial.com/business-health-assessment" 
+               class="primary-cta" target="_blank">
+                Book Your Business Health Assessment
+            </a>
+            <div class="secondary-cta">
+                Prefer to talk to a lending expert?<br>
+                <a href="mailto:sales@tuafinancial.com">Contact our team →</a>
+            </div>
+        </div>
+
+        <!-- Full Disclaimer -->
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> The ROI Calculator is a tool provided for informational and illustrative purposes only. Estimates are based on the information you input and general industry data, and do not constitute financial, tax, legal, or investment advice. This tool is not a guarantee of performance, profitability, or results, and does not represent an offer or commitment to provide financing. Actual results will vary. All financing is subject to credit approval and underwriting by Tua Financial.
+        </div>
+    </div>
+
+    <script>
+        // Handle cash flow checkbox
+        document.getElementById('includeCashFlow').addEventListener('change', function(e) {
+            const revenueGroup = document.getElementById('revenueGroup');
+            if (e.target.checked) {
+                revenueGroup.style.display = 'block';
+                revenueGroup.style.animation = 'fadeIn 0.3s ease';
+            } else {
+                revenueGroup.style.display = 'none';
+                document.getElementById('monthlyRevenue').value = '';
+            }
+        });
+
+        // Show mini insight when capital amount is entered
+        document.getElementById('capitalAmount').addEventListener('input', function(e) {
+            const miniInsight = document.getElementById('miniInsight');
+            const fundingDelay = document.getElementById('fundingDelay').value;
+            if (e.target.value && fundingDelay > 3) {
+                const daysSaved = fundingDelay - 3;
+                miniInsight.innerHTML = `💡 With Tua, you could get funded <strong>${daysSaved} days faster</strong> than with a traditional bank!`;
+                miniInsight.classList.add('show');
+            } else {
+                miniInsight.classList.remove('show');
+            }
+        });
+
+        // Update mini insight when funding delay changes
+        document.getElementById('fundingDelay').addEventListener('change', function(e) {
+            const capitalAmount = document.getElementById('capitalAmount').value;
+            const miniInsight = document.getElementById('miniInsight');
+            if (capitalAmount && e.target.value > 3) {
+                const daysSaved = e.target.value - 3;
+                miniInsight.innerHTML = `💡 With Tua, you could get funded <strong>${daysSaved} days faster</strong> than with a traditional bank!`;
+                miniInsight.classList.add('show');
+            }
+        });
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function calculateROI() {
+            // Get input values
+            const capitalAmount = parseFloat(document.getElementById('capitalAmount').value);
+            const fundingDelay = parseInt(document.getElementById('fundingDelay').value);
+            const useCase = document.getElementById('useCase').value;
+            const loanType = document.getElementById('loanType').value;
+            const includeCashFlow = document.getElementById('includeCashFlow').checked;
+            const monthlyRevenue = parseFloat(document.getElementById('monthlyRevenue').value) || 0;
+
+            // Validate required fields
+            if (!capitalAmount) {
+                alert('Please enter the capital amount needed.');
+                document.getElementById('capitalAmount').focus();
+                return;
+            }
+
+            // Calculate shared metrics
+            const tuaFundingTime = 3; // days
+            const daysSaved = fundingDelay - tuaFundingTime;
+            const costOfDelay = includeCashFlow && monthlyRevenue > 0 
+                ? (monthlyRevenue / 30) * daysSaved 
+                : 0;
+
+            // Create results container
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            // Add Days Saved card
+            if (daysSaved > 0) {
+                const daysCard = createResultCard(
+                    'Time Saved',
+                    `${daysSaved} days`,
+                    'Get funded in 72 hours vs traditional timelines',
+                    true
+                );
+                resultsGrid.appendChild(daysCard);
+            }
+
+            // Add Cost of Delay card if applicable
+            if (costOfDelay > 0) {
+                const delayCard = createResultCard(
+                    'Opportunity Cost Avoided',
+                    formatCurrency(costOfDelay),
+                    'Revenue opportunity preserved by faster funding'
+                );
+                resultsGrid.appendChild(delayCard);
+            }
+
+            // Calculate use case specific benefits
+            let savings = 0;
+            let benefitDescription = '';
+
+            if (useCase === 'Working Capital') {
+                // Working Capital calculations
+                const termCost = capitalAmount * 0.12; // 12% annual rate
+                const lineCost = capitalAmount * 0.6 * 0.12; // 60% utilization at 12%
+                savings = termCost - lineCost;
+                
+                benefitDescription = 'Pay only for what you use — unlike term loans where interest applies to the full lump sum.';
+                
+                // Add flexibility benefit card
+                const flexCard = createResultCard(
+                    'Flexibility Benefit',
+                    'Pay-as-you-use',
+                    benefitDescription
+                );
+                resultsGrid.appendChild(flexCard);
+                
+            } else if (useCase === 'Equipment') {
+                // Equipment calculations
+                const totalLoanInterest = capitalAmount * 0.12 * 5; // 5 years at 12%
+                const leaseCost = capitalAmount * 0.07 * 3; // 3 years at 7%
+                savings = totalLoanInterest - leaseCost;
+                
+                benefitDescription = 'Avoid long-term loans with high interest. Leasing preserves cash while accessing needed equipment.';
+                
+                // Add leasing advantage card
+                const leaseCard = createResultCard(
+                    'Leasing Advantage',
+                    'Preserve Cash',
+                    benefitDescription
+                );
+                resultsGrid.appendChild(leaseCard);
+            }
+
+            // Add Interest Savings card
+            if (savings > 0) {
+                const savingsCard = createResultCard(
+                    'Interest Savings',
+                    formatCurrency(savings),
+                    `Estimated savings vs traditional ${loanType.toLowerCase()}`,
+                    true
+                );
+                resultsGrid.appendChild(savingsCard);
+            }
+
+            // Add Total Benefit card
+            const totalBenefit = savings + costOfDelay;
+            if (totalBenefit > 0) {
+                const totalCard = createResultCard(
+                    'Total Financial Advantage',
+                    formatCurrency(totalBenefit),
+                    'Combined savings and opportunity value with TuaCommercial',
+                    true
+                );
+                resultsGrid.appendChild(totalCard);
+            }
+
+            // Show results and CTA sections
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('ctaSection').style.display = 'block';
+
+            // Smooth scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function createResultCard(label, value, description, isHighlight = false) {
+            const card = document.createElement('div');
+            card.className = isHighlight ? 'result-card highlight-card' : 'result-card';
+            card.innerHTML = `
+                <div class="result-label">${label}</div>
+                <div class="result-value">${value}</div>
+                ${description ? `<div class="result-description">${description}</div>` : ''}
+            `;
+            return card;
+        }
+
+        // Add enter key support for calculation
+        document.getElementById('capitalAmount').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateROI();
+            }
+        });
+
+        document.getElementById('monthlyRevenue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateROI();
+            }
+        });
+    </script>
+</body>
+</html>
